@@ -8,7 +8,8 @@ load_dotenv()
 
 config_list = [
     {
-        "model": os.getenv("model")
+        "model": os.getenv("model"),
+        "api_base": "http://localhost:5001/v1",
         "api_key": os.getenv("api_key")
     },
 ]
