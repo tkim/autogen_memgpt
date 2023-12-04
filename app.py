@@ -1,27 +1,53 @@
-import autogen
 import os
+import autogen
+import memgpt.autogen.memgpt_agent as memgpt_autogen
+import memgpt.autogen.interface as autogen_interface
+import memgpt.agent as agent
+import memgpt.system as system
+import memgpt.utils as utils
+import memgpt.presets as presets
+import memgpt.constants as constants
+import memgpt.personas.personas as personas
+import memgpt.humans.humans as humans
+from memgpt.persistence_manager import InMemoryStateManager, InMemoryStateManagerWithPreloadedArchivalMemory, InMemoryStateManagerWithFaiss
 import openai
-from memgpt.autogen.memgpt_agent import create_autogen_memgpt_agent
-from dotenv import load_dotenv
+openai.api_key = ''
 
-load_dotenv()
-
-config_list = [
+""" config_list = [
     {
         "model": os.getenv("model"),
         "api_base": "http://localhost:5001/v1",
         "api_key": os.getenv("api_key")
     },
-]
+] 
+"""
 
-openai.api_key = os.getenv("api_key")
+config_list = [
+    {
+        'model': 'gpt-4'
+    },
+]
 
 llm_config = {
     "config_list": config_list,
-    "seed": int(os.getenv("seed")),
-    "request_timeout": int(os.getenv("request_timeout"))
+    "seed": 42
+    #"request_timeout": int(os.getenv("request_timeout"))
 }
 
+inteface = autogen_interface.AutoGenInterface() # MemGPT talk to AutoGen
+persistence_manager = InMemoryStateManager()
+persona = "I\'m a 10x engineer at a tech company."
+human = "I\'m a team manager at a tech company"
+memgpt_agent     = presetns.use_preset(presets.DEFAULT, 'gpt-4', persona, human, interface, persistence_manager)
+
+#MemGPT coder
+coder = memgpt_autogen.MemGPTAgent(
+    name="MemGPT_coder",
+    agent=memgpt_agent,
+)
+
+
+'''
 # The user agent
 user_proxy = autogen.UserProxyAgent(
     name="User_proxy",
@@ -34,3 +60,4 @@ user_proxy = autogen.UserProxyAgent(
         
     }
 )
+'''
