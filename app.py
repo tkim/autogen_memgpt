@@ -38,7 +38,7 @@ inteface = autogen_interface.AutoGenInterface() # MemGPT talk to AutoGen
 persistence_manager = InMemoryStateManager()
 persona = "I\'m a 10x engineer at a tech company."
 human = "I\'m a team manager at a tech company"
-memgpt_agent     = presetns.use_preset(presets.DEFAULT, 'gpt-4', persona, human, interface, persistence_manager)
+memgpt_agent     = presets.use_preset(presets.DEFAULT, 'gpt-4', persona, human, interface, persistence_manager)
 
 #MemGPT coder
 coder = memgpt_autogen.MemGPTAgent(
@@ -46,6 +46,17 @@ coder = memgpt_autogen.MemGPTAgent(
     agent=memgpt_agent,
 )
 
+# non-MemGPT PM
+pm = autogen.AssistantAgent(
+    name="Product_manager",
+    system_message="Creative in software product ideas.",
+    llm_config=llm_config,
+)
+
+groupchat = autogen.GroupChat(agents=[user_proxy, coder, pm], messages=[], max_round=12)
+manager = autogen.GroupChatManager(groupchat=groupchat, llm_config=llm_config)
+
+user_proxy.initiate_chat(manager, message="First send the message 'Let's go Mario!'")
 
 '''
 # The user agent
